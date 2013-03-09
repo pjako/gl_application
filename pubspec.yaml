@@ -1,0 +1,12 @@
+name: gl_application
+version: 0.0.1
+description: Just a simple Baseclass to do WebGL Apps
+dependencies:
+  browser: any
+  spectre:
+    git: https://github.com/johnmccutchan/spectre
+  game_loop:
+    git: https://github.com/johnmccutchan/game_loop.git
+
+#dependencies:
+#  unittest: any
