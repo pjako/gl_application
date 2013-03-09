@@ -7,8 +7,6 @@ import 'package:game_loop/game_loop.dart';
 import 'package:spectre/spectre.dart';
 
 
-
-
 class GLApplication {
   /// The red value to clear the color buffer to.
   final double redClearColor = 128.0 / 255.0;
@@ -47,6 +45,7 @@ class GLApplication {
   /// Used to draw debugging information to the screen. In this sample the
   /// skeleton of the mesh is drawn by the [DebugDrawManager].
   DebugDrawManager _debugDrawManager;
+  DebugDrawManager get debugDrawManager => _debugDrawManager;
   /// Whether debugging information should be drawn.
   ///
   /// If the debugging information is turned on in this sample the
@@ -61,11 +60,12 @@ class GLApplication {
 
   /// The [Camera] being used to view the scene.
   Camera _camera;
+  Camera get camera => _camera;
   /// The [MouseKeyboardCameraController] which allows the movement of the [Camera].
   ///
   /// A [MouseKeyboardCameraController] provides a way to move the camera in the
   /// same way that a free-look FPS operates.
-  MouseKeyboardCameraController _cameraController;
+  //MouseKeyboardCameraController _cameraController;
   /// The Model-View-Projection matrix.
   mat4 _modelViewProjectionMatrix;
   /// [Float32Array] storage for the Model-View matrix.
@@ -122,8 +122,13 @@ class GLApplication {
     // Create the Camera and the CameraController
     _createCamera();
 
-    // Call the onResize method which will update the viewport and camera
-    onResize(width, height);
+
+    // Resize the viewport
+    _viewport.width = width;
+    _viewport.height = height;
+
+    // Change the aspect ratio of the camera
+    _camera.aspectRatio = _viewport.aspectRation;
 
     // Start loading the resources
     //_loadResources();
@@ -146,10 +151,7 @@ class GLApplication {
     _camera.position = new vec3.raw(1.0, 1.0, 1.0);
     _camera.focusPosition = new vec3.raw(0.0, 0.0, 0.0);
 
-    // Create the CameraController and set the velocity of the movement
-    _cameraController = new MouseKeyboardCameraController();
-    _cameraController.forwardVelocity = 250.0;
-    _cameraController.strafeVelocity = 250.0;
+
 
     // Create the mat4 holding the Model-View-Projection matrix
     _modelViewProjectionMatrix = new mat4();
@@ -205,9 +207,7 @@ class GLApplication {
     if(_drawDebugInformation == true) {
       _debugDrawManager.update(dt);
     }
-    
-    
-    _cameraController.updateCamera(dt, _camera);
+    onUpdate(dt);
 
     // Get the current model-view-projection matrix
     //
@@ -236,7 +236,7 @@ class GLApplication {
     // Copy the Normal matrix from the camera into the Float32Array.
     _camera.copyNormalMatrixIntoArray(_normalMatrixArray);
     
-    onUpdate(dt);
+    
   }
   void _onRender(GameLoop gameLoop) {
     // Clear the color and depth buffer
