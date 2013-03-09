@@ -1,4 +1,4 @@
-library GL_Application;
+library gl_application;
 import 'dart:html';
 import 'dart:math' as Math;
 import 'dart:async';
