@@ -1,0 +1,22 @@
+
+body {
+  background-color: #4D4D4D;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.2em;
+  margin: 15px;
+}
+
+#container {
+  width: 100%;
+  height: 500px;
+  position: relative;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+#backBuffer {
+  width: 100%;
+  height: 100%;
+}

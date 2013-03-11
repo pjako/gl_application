@@ -7,21 +7,25 @@ import 'package:game_loop/game_loop.dart';
 import 'package:spectre/spectre.dart';
 
 
-class GLApplication {
+
+
+
+
+abstract class GLApplication {
   /// The red value to clear the color buffer to.
-  final double redClearColor = 128.0 / 255.0;
+  final double redClearColor = 70.0 / 255.0;
   /// The green value to clear the color buffer to.
-  final double greenClearColor = 128.0 / 255.0;
+  final double greenClearColor = 70.0 / 255.0;
   /// The blue value to clear the color buffer to.
-  final double blueClearColor = 128.0 / 255.0;
+  final double blueClearColor = 70.0 / 255.0;
   /// The alpha value to clear the color buffer to.
   final double alphaClearColor = 1.0;
-  
-  
+
+
   //---------------------------------------------------------------------
   // Member variables
   //---------------------------------------------------------------------
-  
+
   /// The [GameLoop] used by this application
   GameLoop _gameLoop;
   GameLoop get gameLoop => _gameLoop;
@@ -30,12 +34,14 @@ class GLApplication {
   ///
   /// All [GraphicsResource]s are created through the [GraphicsDevice].
   GraphicsDevice _graphicsDevice;
+  GraphicsDevice get graphicsDevice => _graphicsDevice;
   /// The [GraphicsContext] used by the application.
   ///
   /// The [GraphicsContext] is used to render the scene. All the rendering
   /// commands pass through the context.
   GraphicsContext _graphicsContext;
-  
+  GraphicsContext get graphicsContext => _graphicsContext;
+
   //---------------------------------------------------------------------
   // Debug drawing member variables
   //---------------------------------------------------------------------
@@ -51,9 +57,9 @@ class GLApplication {
   /// If the debugging information is turned on in this sample the
   /// mesh's skeleton will be displayed.
   bool _drawDebugInformation = false;
-  
+
   BlendState _debugBlend;
-  
+
   //---------------------------------------------------------------------
   // Camera member variables
   //---------------------------------------------------------------------
@@ -66,22 +72,22 @@ class GLApplication {
   /// A [MouseKeyboardCameraController] provides a way to move the camera in the
   /// same way that a free-look FPS operates.
   //MouseKeyboardCameraController _cameraController;
-  /// The Model-View-Projection matrix.
-  mat4 _modelViewProjectionMatrix;
+
   /// [Float32Array] storage for the Model-View matrix.
   Float32Array _modelViewMatrixArray;
-  /// [Float32Array] storage for the Model-View-Projection matrix.
-  Float32Array _modelViewProjectionMatrixArray;
+  Float32Array get modelViewMatrixArray => _modelViewMatrixArray;
+
   /// [Float32Array] storage for the normal matrix.
   Float32Array _normalMatrixArray;
-  
+  Float32Array get normalMatrixArray => _normalMatrixArray;
+
   /// The [Viewport] to draw to.
   Viewport _viewport;
-  
-  
 
-  
-  
+
+
+
+
   //---------------------------------------------------------------------
   // Construction
   //---------------------------------------------------------------------
@@ -90,13 +96,13 @@ class GLApplication {
   ///
   /// The application is hosted within the [CanvasElement] specified in [canvas].
   GLApplication(CanvasElement canvas) {
-    
+
     _gameLoop = new GameLoop(canvas);
     _gameLoop.onUpdate = _onUpdate;
     _gameLoop.onResize = _onResize;
     _gameLoop.onRender = _onRender;
-    
-    
+
+
     // Resize the canvas using the offsetWidth/offsetHeight.
     //
     // The canvas width/height is not being explictly specified in the markup,
@@ -111,9 +117,9 @@ class GLApplication {
 
     // Create the GraphicsDevice and attaches the AssetManager
     _createGraphicsDevice(canvas);
-    
+
     // Create the DebugDrawManager for the GraphicsDevice
-    
+
     _debugBlend = new BlendState.opaque("Debug.blend", _graphicsDevice);
 
     // Create the viewport
@@ -132,8 +138,10 @@ class GLApplication {
 
     // Start loading the resources
     //_loadResources();
+
+
   }
-  
+
   /// Creates the [GraphicsDevice] and attaches the [AssetManager].
   void _createGraphicsDevice(CanvasElement canvas) {
     // Create the GraphicsDevice using the CanvasElement
@@ -143,7 +151,7 @@ class GLApplication {
     _graphicsContext = _graphicsDevice.context;
   }
 
-  
+
   /// Create the [Camera] and the [CameraController] to position it.
   void _createCamera() {
     // Create the Camera
@@ -154,16 +162,16 @@ class GLApplication {
 
 
     // Create the mat4 holding the Model-View-Projection matrix
-    _modelViewProjectionMatrix = new mat4();
+    //_modelViewProjectionMatrix =
 
     // Create the Float32Arrays that store the constant values for the matrices
     _modelViewMatrixArray = new Float32Array(16);
-    _modelViewProjectionMatrixArray = new Float32Array(16);
+    //_modelViewProjectionMatrixArray
     _normalMatrixArray = new Float32Array(16);
   }
-  
-  
-  
+
+
+
   //---------------------------------------------------------------------
   // Properties
   //---------------------------------------------------------------------
@@ -179,7 +187,7 @@ class GLApplication {
     }
     _drawDebugInformation = value;
   }
-  
+
   /// Resizes the application viewport.
   ///
   /// Changes the [Viewport]'s dimensions to the values contained in [width]
@@ -198,9 +206,9 @@ class GLApplication {
     // Change the aspect ratio of the camera
     _camera.aspectRatio = _viewport.aspectRation;
     onResize(width, height);
-    
+
   }
-  
+
   void _onUpdate(GameLoop gameLoop) {
     double dt = gameLoop.dt;
     // Update DebugManager
@@ -209,34 +217,15 @@ class GLApplication {
     }
     onUpdate(dt);
 
-    // Get the current model-view-projection matrix
-    //
-    // Start off by copying the projection matrix into the matrix.
-    _camera.copyProjectionMatrix(_modelViewProjectionMatrix);
 
-    // Multiply the projection matrix by the view matrix to combine them.
-    //
-    // The mathematical operators in Dart Vector Math will end up creating
-    // a new object. Rather than using * a self multiply is used. This is to
-    // avoid creating additional objects. As a general rule with a garbage
-    // collected language objects should be reused whenever possible.
-    _modelViewProjectionMatrix.multiply(_camera.viewMatrix);
-
-    // At this point we actually have the Model-View-Projection matrix. This
-    // is because the model matrix is currently the identity matrix. The model
-    // has no rotation, no scaling, and is sitting at (0, 0, 0).
-
-    // Copy the Model-View-Projection matrix into a Float32Array so it can be
-    // passed in as a constant to the ShaderProgram.
-    _modelViewProjectionMatrix.copyIntoArray(_modelViewProjectionMatrixArray);
 
     // Copy the View matrix from the camera into the Float32Array.
     _camera.copyViewMatrixIntoArray(_modelViewMatrixArray);
 
     // Copy the Normal matrix from the camera into the Float32Array.
     _camera.copyNormalMatrixIntoArray(_normalMatrixArray);
-    
-    
+
+
   }
   void _onRender(GameLoop gameLoop) {
     // Clear the color and depth buffer
@@ -246,20 +235,20 @@ class GLApplication {
       blueClearColor,
       alphaClearColor
     );
-    _graphicsContext.clearDepthBuffer(0.0);
+    _graphicsContext.clearDepthBuffer(1.0);
 
     // Reset the graphics context
     _graphicsContext.reset();
     _graphicsContext.setViewport(_viewport);
     onRender();
-    
+
     if (_drawDebugInformation == true) {
-      
+
       _debugDrawManager.prepareForRender();
       _debugDrawManager.render(_camera);
     }
   }
-  
+
   //---------------------------------------------------------------------
   // Public methods
   //---------------------------------------------------------------------
@@ -272,23 +261,17 @@ class GLApplication {
   ///
   /// This needs to occur whenever the underlying [CanvasElement] is resized,
   /// otherwise the rendered scene will be incorrect.
-  void onResize(int width, int height) {
-    
-  }
-  
-  
+  void onResize(int width, int height);
+
+
   /// Updates the application.
   ///
   /// Uses the current change in time, [dt].
-  void onUpdate(double dt) {
-    
-  }
-  
+  void onUpdate(double dt);
+
   /// Renders the application
-  void onRender() {
-    
-  }
-  
+  void onRender();
+
   void start() {
     _gameLoop.start();
   }
